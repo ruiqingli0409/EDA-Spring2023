@@ -1,6 +1,6 @@
 ---
 title: "Assignment 1: Introduction"
-author: "Student Name"
+author: "Ruiqing Li"
 output: pdf_document
 geometry: margin=2.54cm
 ---
@@ -10,7 +10,7 @@ geometry: margin=2.54cm
 This exercise accompanies the introductory material in Environmental Data Analytics. 
 
 ## Directions
-1.  Rename this file `<FirstLast>_A01_Introduction.Rmd` (replacing `<FirstLast>` with your first and last name).
+1.  Rename this file `<RuiqingLi>_A01_Introduction.Rmd` (replacing `<FirstLast>` with your first and last name).
 2.  Change "Student Name" on line 3 (above) with your name.
 3.  Work through the steps, **creating code and output** that fulfill each instruction.
 4.  Be sure to **answer the questions** in this assignment document.
@@ -39,22 +39,22 @@ Enter answers to the questions just below the >Answer: prompt.
 
 1. What are your previous experiences with data analytics, R, and Git? Include both formal and informal training.
 
-> Answer: 
+> Answer: ENV710 Applied Statistical Modeling for Environmental Management with Dr.Betsy Albright
 
 2. Are there any components of the course about which you feel confident?
 
-> Answer: 
+> Answer: Data Visualization is the part I did best last semester in 710; I really appreciate the hybrid natural of this class which gives me chances to go back to the material and review at my own convenience.
 
 3. Are there any components of the course about which you feel apprehensive?
 
-> Answer: 
+> Answer: Data Cleaning process. I always was provided with clean data set so this is completely new to me; Time manage is also something I need to wrok on, and watching recordings prior to class is new to me and I need to get used to that. But I do think this is a more efficient way of learning.
 
 
 ## 3) GitHub
 
 Provide a link below to your forked course repository in GitHub. Make sure you have pulled all recent changes from the course repository and that you have updated your course README file, committed those changes, and pushed them to your GitHub account. 
 
-> Answer: 
+> Answer: https://github.com/ruiqingli0409/EDA-Spring2023.git
 
 ## 4) Knitting
 When you have completed this document, click the `knit` button.This should produce a PDF copy of your markdown document. Submit this PDF to Sakai. 
