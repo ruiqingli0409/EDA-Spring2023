@@ -94,11 +94,11 @@ Test_Score2 <- function(x){
 
 11. Apply your function to the vector with test scores that you created in number 5.
 
-```{r}
+
 #If and Else Function
 ifandelse<- Test_Score (TestScores)
 ifandelse
-```
+**Error in if (x >= 50) { : the condition has length > 1**
 
 ```{r}
 #IfElse Function
