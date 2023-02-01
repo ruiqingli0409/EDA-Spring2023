@@ -116,7 +116,7 @@ x
 
 ### Naming
 
-R objects can be named with a combination of letters, numbers, underscore (`_`) and period (`.`). The best R object names are *informative*. Resist the temptation to call your R object something convenient, like "a", "b", and so on. Calling your R object something specific means that you can call up that object later and have an idea of what it contains, with less need for specific context.
+R objects can be named with a combination of letters, numbers, underscore (`_`) and period (`.`). The best R object names are *informative*. Resist the temptation to call your R object something convenient, like "a", "b", and so on. **Calling your R object something specific means that you can call up that object later and have an idea of what it contains, with less need for specific context.**
 
 Informative names are the first illustration of a common data management recommendation: take the time to use best management practices at the outset, and it will save you time in the long term.
 
@@ -128,7 +128,7 @@ What happens if there is a typo in your code? Type the following in the R window
 
 ```{r}
 long_name_for_illustration <- 11
-
+long_name_for_illustration
 ```
 
 ### Comments
@@ -139,6 +139,8 @@ Within your R code, it is often useful to include notes about your workflow. So 
 # I am demonstrating a comment here. 
 
 1 + 1 # This is a simple math problem
+
+#1+1
 ```
 
 ### Functions
@@ -169,7 +171,7 @@ A single ingredient recipe:
 # Write the recipe
 recipe1 <- function(x){
   mix <- x*2
-  return(mix)
+  return(mix) #what will be the output of your function
 }
 
 # Bake the recipe
