@@ -34,6 +34,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Ex
 
 ```{r,  message = FALSE}
 library(lubridate)
+library(tidyverse)
 
 Neonics <- read.csv("./Data/Raw/ECOTOX_Neonicotinoids_Insects_raw.csv",stringsAsFactors = TRUE)
 
@@ -138,6 +139,7 @@ class(Litter$collectDate)
 
 ```{r}
 unique(Litter$plotID)
+summary(Litter$plotID)
 ```
 
 > Answer:
