@@ -1,6 +1,6 @@
 ---
 title: "Assignment 4: Data Wrangling"
-author: "Student Name"
+author: "Ruiqing Li"
 date: "Spring 2023"
 output: pdf_document
 geometry: margin=2.54cm
@@ -12,6 +12,7 @@ geometry: margin=2.54cm
 
 #install.packages('formatR')
 knitr::opts_chunk$set(tidy.opts=list(width.cutoff=80), tidy=TRUE)
+install.packages('formatR')
 ```
 
 
@@ -21,7 +22,7 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Wr
 
 ## Directions
 
-1.  Rename this file `<FirstLast>_A04_DataWrangling.Rmd` (replacing `<FirstLast>` with your first and last name).
+1.  Rename this file `<RuiqingLi>_A04_DataWrangling.Rmd` (replacing `<FirstLast>` with your first and last name).
 2. Change "Student Name" on line 3 (above) with your name.
 3. Work through the steps, **creating code and output** that fulfill each instruction.
 4. Be sure to **answer the questions** in this assignment document.
@@ -41,12 +42,33 @@ The completed exercise is due on Friday, Feb 20th @ 5:00pm.
 
 ```{r, message = FALSE}
 #1a 
-
+library(tidyverse)
+library(lubridate)
+install.packages('here')
+library(here)
 #1b 
+getwd()
+```
 
+```{r, message = FALSE}
 #1c 
+EPAair_O3_NC2018_raw <- read.csv(file=here("Data/Raw/EPAair_O3_NC2018_raw.csv"),
+                                 stringsAsFactors = TRUE)
 
+EPAair_O3_NC2019_raw <- read.csv(file=here("Data/Raw/EPAair_O3_NC2019_raw.csv"),
+                                 stringsAsFactors = TRUE)
+
+EPAair_PM25_NC2018_raw <- read.csv(file=here("Data/Raw/EPAair_PM25_NC2018_raw.csv"),
+                                   stringsAsFactors = TRUE)
+
+EPAair_PM25_NC2019_raw <- read.csv(file=here("Data/Raw/EPAair_PM25_NC2019_raw.csv"),
+                                   stringsAsFactors = TRUE)
 #2 
+glimpse(EPAair_O3_NC2018_raw)
+glimpse(EPAair_O3_NC2019_raw)
+glimpse(EPAair_PM25_NC2018_raw)
+glimpse(EPAair_PM25_NC2019_raw)
+
 
 ```
 
@@ -63,8 +85,36 @@ The completed exercise is due on Friday, Feb 20th @ 5:00pm.
 
 ```{r}
 #3
+EPAair_O3_NC2018_raw$Date <- as.Date(EPAair_O3_NC2018_raw$Date, format = "%m/%d/%y")
+EPAair_O3_NC2019_raw$Date <- as.Date(EPAair_O3_NC2019_raw$Date, format = "%m/%d/%y")
+EPAair_PM25_NC2018_raw$Date <- as.Date(EPAair_PM25_NC2018_raw$Date, format = "%m/%d/%y")
+EPAair_PM25_NC2019_raw$Date <- as.Date(EPAair_PM25_NC2019_raw$Date, format = "%m/%d/%y")
+````
 
+```{r}
+class(EPAair_O3_NC2018_raw$Date)
+EPAair_O3_NC2018_raw$Date <- ymd(EPAair_O3_NC2018_raw$Date)
+class(EPAair_O3_NC2018_raw$Date)
+
+class(EPAair_O3_NC2019_raw$Date)
+EPAair_O3_NC2019_raw$Date <- ymd(EPAair_O3_NC2019_raw$Date)
+class(EPAair_O3_NC2019_raw$Date)
+
+class(EPAair_PM25_NC2018_raw$Date)
+EPAair_PM25_NC2018_raw$Date <- ymd(EPAair_PM25_NC2018_raw$Date)
+class(EPAair_PM25_NC2018_raw$Date)
+
+class(EPAair_PM25_NC2019_raw$Date)
+EPAair_PM25_NC2019_raw$Date <- ymd(EPAair_PM25_NC2019_raw$Date)
+class(EPAair_PM25_NC2019_raw$Date)
+
+
+
+````
+
+```{r}
 #4
+EPAair_O3_NC2018_raw.1 <- select(EPAair_O3_NC2018_raw,Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 
 #5
 
