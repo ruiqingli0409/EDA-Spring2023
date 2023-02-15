@@ -68,8 +68,6 @@ glimpse(EPAair_O3_NC2018_raw)
 glimpse(EPAair_O3_NC2019_raw)
 glimpse(EPAair_PM25_NC2018_raw)
 glimpse(EPAair_PM25_NC2019_raw)
-
-
 ```
 
 
@@ -85,41 +83,34 @@ glimpse(EPAair_PM25_NC2019_raw)
 
 ```{r}
 #3
-EPAair_O3_NC2018_raw$Date <- as.Date(EPAair_O3_NC2018_raw$Date, format = "%m/%d/%y")
-EPAair_O3_NC2019_raw$Date <- as.Date(EPAair_O3_NC2019_raw$Date, format = "%m/%d/%y")
-EPAair_PM25_NC2018_raw$Date <- as.Date(EPAair_PM25_NC2018_raw$Date, format = "%m/%d/%y")
-EPAair_PM25_NC2019_raw$Date <- as.Date(EPAair_PM25_NC2019_raw$Date, format = "%m/%d/%y")
-````
-
-```{r}
-class(EPAair_O3_NC2018_raw$Date)
-EPAair_O3_NC2018_raw$Date <- ymd(EPAair_O3_NC2018_raw$Date)
-class(EPAair_O3_NC2018_raw$Date)
-
-class(EPAair_O3_NC2019_raw$Date)
-EPAair_O3_NC2019_raw$Date <- ymd(EPAair_O3_NC2019_raw$Date)
-class(EPAair_O3_NC2019_raw$Date)
-
-class(EPAair_PM25_NC2018_raw$Date)
-EPAair_PM25_NC2018_raw$Date <- ymd(EPAair_PM25_NC2018_raw$Date)
-class(EPAair_PM25_NC2018_raw$Date)
-
-class(EPAair_PM25_NC2019_raw$Date)
-EPAair_PM25_NC2019_raw$Date <- ymd(EPAair_PM25_NC2019_raw$Date)
-class(EPAair_PM25_NC2019_raw$Date)
-
-
-
-````
+EPAair_O3_NC2018_raw$Date <- as.Date(EPAair_O3_NC2018_raw$Date, format = "%m/%d/%Y")
+EPAair_O3_NC2019_raw$Date <- as.Date(EPAair_O3_NC2019_raw$Date, format = "%m/%d/%Y")
+EPAair_PM25_NC2018_raw$Date <- as.Date(EPAair_PM25_NC2018_raw$Date, format = "%m/%d/%Y")
+EPAair_PM25_NC2019_raw$Date <- as.Date(EPAair_PM25_NC2019_raw$Date, format = "%m/%d/%Y")
+```
 
 ```{r}
 #4
 EPAair_O3_NC2018_raw.1 <- select(EPAair_O3_NC2018_raw,Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 
+EPAair_O3_NC2019_raw.1 <- select(EPAair_O3_NC2019_raw,Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+
+EPAair_PM25_NC2018_raw.1 <- select(EPAair_PM25_NC2018_raw,Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
+
+EPAair_PM25_NC2019_raw.1 <- select(EPAair_PM25_NC2019_raw,Date, DAILY_AQI_VALUE, Site.Name, AQS_PARAMETER_DESC, COUNTY, SITE_LATITUDE, SITE_LONGITUDE)
 #5
 
-#6
+EPAair_PM25_NC2018 <-
+  EPAair_PM25_NC2018_raw.1%>%
+  mutate(AQS_PARAMETER_DESC = "PM2.5")
 
+EPAair_PM25_NC2019 <-
+  EPAair_PM25_NC2019_raw.1%>%
+  mutate(AQS_PARAMETER_DESC = "PM2.5")
+#6
+write.csv(EPAair_PM25_NC2018, row.names = FALSE, file = "Data/Processed/EPAair_PM25_NC2018_Processed.csv")
+
+write.csv(EPAair_PM25_NC2019, row.names = FALSE, file = "Data/Processed/EPAair_PM25_NC2019_Processed.csv")
 ```
 
 
@@ -145,9 +136,18 @@ EPAair_O3_NC2018_raw.1 <- select(EPAair_O3_NC2018_raw,Date, DAILY_AQI_VALUE, Sit
 
 ```{r}
 #7 
+Combined <- rbind(EPAair_PM25_NC2018,EPAair_PM25_NC2019,EPAair_O3_NC2019_raw.1,EPAair_O3_NC2018_raw.1)
 
 #8 
-
+New <- Combined %>% 
+  filter(Site.Name == "Linville Falls", "Durham Armory", "Leggett", "Hattie Avenue", "Clemmons Middle", "Mendenhall School", "Frying Pan Mountain", "West Johnston Co.", "Garinger High School", "Castle Hayne", "Pitt Agri. Center", "Bryson City", "Millbrook School") %>%
+   group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
+   summarise(meanAQIValue = mean(DAILY_AQI_VALUE), 
+            meanLatitude = mean(SITE_LATITUDE), 
+            meanLogituude = mean(SITE_LONGITUDE)%>%
+          mdy(Combined$Date))
+  
+ 
 #9
 
 #10
