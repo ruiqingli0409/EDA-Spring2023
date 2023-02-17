@@ -144,8 +144,10 @@ Combined %>%
    group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
    summarise(meanAQIValue = mean(DAILY_AQI_VALUE), 
             meanLatitude = mean(SITE_LATITUDE), 
-            meanLogituude = mean(SITE_LONGITUDE)%>%
-          mdy(Combined$Date))
+            meanLogituude = mean(SITE_LONGITUDE)) %>%
+   mutate(Year=year(Date),
+         Month=month(Date))
+            
   
  
 #9
