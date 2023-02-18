@@ -108,9 +108,9 @@ EPAair_PM25_NC2019 <-
   EPAair_PM25_NC2019_raw.1%>%
   mutate(AQS_PARAMETER_DESC = "PM2.5")
 #6
-write.csv(EPAair_PM25_NC2018, row.names = FALSE, file = "Data/Processed/EPAair_PM25_NC2018_Processed.csv")
+write.csv(EPAair_PM25_NC2018, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2018_Processed.csv")
 
-write.csv(EPAair_PM25_NC2019, row.names = FALSE, file = "Data/Processed/EPAair_PM25_NC2019_Processed.csv")
+write.csv(EPAair_PM25_NC2019, row.names = FALSE, file = "./Data/Processed/EPAair_PM25_NC2019_Processed.csv")
 ```
 
 
@@ -139,7 +139,7 @@ write.csv(EPAair_PM25_NC2019, row.names = FALSE, file = "Data/Processed/EPAair_P
 Combined <- rbind(EPAair_PM25_NC2018,EPAair_PM25_NC2019,EPAair_O3_NC2019_raw.1,EPAair_O3_NC2018_raw.1)
 
 #8 
-Combined %>% 
+New<-Combined %>% 
   filter(Site.Name == "Linville Falls"|Site.Name =="Durham Armory"|Site.Name =="Leggett"| Site.Name =="Hattie Avenue"| Site.Name =="Clemmons Middle"| Site.Name =="Mendenhall School"| Site.Name =="Frying Pan Mountain"| Site.Name =="West Johnston Co."| Site.Name =="Garinger High School"|Site.Name == "Castle Hayne"| Site.Name =="Pitt Agri. Center"| Site.Name =="Bryson City"|Site.Name =="Millbrook School") %>%
    group_by(Date, Site.Name, AQS_PARAMETER_DESC, COUNTY) %>%
    summarise(meanAQIValue = mean(DAILY_AQI_VALUE), 
@@ -147,15 +147,16 @@ Combined %>%
             meanLogituude = mean(SITE_LONGITUDE)) %>%
    mutate(Year=year(Date),
          Month=month(Date))
+```
+
             
-  
- 
+```{r}  
 #9
-
+AQI.data.spread1 <- pivot_wider(New, names_from =AQS_PARAMETER_DESC, values_from =meanAQIValue)
 #10
-
+dim(AQI.data.spread1)
 #11
-
+write.csv(AQI.data.spread1, row.names = FALSE, file = "./Data/Processed/EPAair_O3_PM25_NC1819_Processed.csv")
 ```
 
 
@@ -168,13 +169,16 @@ Combined %>%
 ```{r}
 
 #12
-
-
+EPAir_Summaries <- 
+ AQI.data.spread1 %>%
+group_by(Month,Year, Site.Name) %>%
+   summarise(meanAQIValuePm2.5 = mean(PM2.5), 
+            meanAQIValueOzone = mean(Ozone)) %>%
+  drop_na(meanAQIValueOzone)
 #13
-
-
+dim(EPAir_Summaries)
 ```
 
 14. Why did we use the function `drop_na` rather than `na.omit`?
 
-> Answer: 
+> Answer: When using `na.omit` it dropped all rows that contain NA values regardless columns; but when using `drop_na`, I'm able to specify which column's NAs I want to drop. 
