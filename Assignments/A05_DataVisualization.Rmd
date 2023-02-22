@@ -71,13 +71,15 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 ```{r plot total P vs PO4}
 #4 
 Total.PeterPaul.chem.nutrients<- 
-  ggplot(PeterPaul.chem.nutrients, aes(x = tp_ug, y = po4)) +
+  ggplot(PeterPaul.chem.nutrients, aes(x = tp_ug, y = po4,color=lakename)) +
   geom_point()+
-  facet_wrap(vars(lakename), nrow = 3)+
  xlim(0, 80) +
   ylim(0, 30)+
-  geom_smooth(color="black")
+  geom_smooth(color="black")+
+                 xlab("total phosphorus")+
+                 ylab("phosphate")
 print(Total.PeterPaul.chem.nutrients)
+
 ```
 
 5. [NTL-LTER] Make three separate boxplots of (a) temperature, (b) TP, and (c) TN, with month as the x axis and lake as a color aesthetic. Then, create a cowplot that combines the three graphs. Make sure that only one legend is present and that graph axes are aligned. 
@@ -87,18 +89,24 @@ Tip: R has a build in variable called `month.abb` that returns a list of months;
 ```{r Create boxplots}
 #5 
 temperature.NTL.LTER <-
-  ggplot(PeterPaul.chem.nutrients, aes(x = month, y=temperature_C)) +
-  geom_boxplot(aes(color = lakename))
+  ggplot(PeterPaul.chem.nutrients, aes(x = as.factor(month), y=temperature_C)) +
+  geom_boxplot(aes(color = lakename))+
+                 xlab("month")+
+                 ylab("temperature")
 print(temperature.NTL.LTER)
 
 tn_ug.NTL.LTER <-
-  ggplot(PeterPaul.chem.nutrients, aes(x = month, y=tn_ug)) +
-  geom_boxplot(aes(color = lakename))
+  ggplot(PeterPaul.chem.nutrients, aes(as.factor(month), y=tn_ug)) +
+  geom_boxplot(aes(color = lakename))+
+                 xlab("month")+
+                 ylab("temperature")
 print(tn_ug.NTL.LTER)
 
 tp_ug.NTL.LTER <-
-  ggplot(PeterPaul.chem.nutrients, aes(x = month, y=tp_ug)) +
-  geom_boxplot(aes(color = lakename))
+  ggplot(PeterPaul.chem.nutrients, aes(as.factor(month), y=tp_ug)) +
+  geom_boxplot(aes(color = lakename))+
+                 xlab("month")+
+                 ylab("temperature")
 print(tp_ug.NTL.LTER)
 
 library(cowplot)
@@ -116,9 +124,11 @@ Question: What do you observe about the variables of interest over seasons and b
 ```{r Plot litter}
 #6
 needles.Niwot.Ridge.litter <- 
-  ggplot(subset(Niwot.Ridge.litter, functionalGroup == "Needles"), 
+  ggplot(subset(Niwot.Ridge.litter, functionalGroup = "Needles"), 
          aes( x = collectDate, y = dryMass)) + 
   geom_point(aes(color= nlcdClass))+
+                 xlab("collectdate")+
+                 ylab("drymass")
 print(needles.Niwot.Ridge.litter)
 ```
 
@@ -127,7 +137,9 @@ print(needles.Niwot.Ridge.litter)
 needles.Niwot.Ridge.litter.faceted<-
   ggplot(Niwot.Ridge.litter,aes(y = dryMass, x = collectDate)) +
   geom_point() +
-  facet_wrap(vars(nlcdClass), nrow = 3)
+  facet_wrap(vars(nlcdClass), nrow = 3)+
+                 xlab("collectdate")+
+                 ylab("drymass")
 print(needles.Niwot.Ridge.litter.faceted)
 
 ```
