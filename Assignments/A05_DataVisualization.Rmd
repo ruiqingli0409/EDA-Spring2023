@@ -73,9 +73,9 @@ For numbers 4-7, create ggplot graphs and adjust aesthetics to follow best pract
 Total.PeterPaul.chem.nutrients<- 
   ggplot(PeterPaul.chem.nutrients, aes(x = tp_ug, y = po4,color=lakename)) +
   geom_point()+
- xlim(0, 80) +
-  ylim(0, 30)+
-  geom_smooth(color="black")+
+ xlim(0, 75) +
+  ylim(0, 20)+
+  geom_smooth(method=lm,color="black",size=0.5)+
                  xlab("total phosphorus")+
                  ylab("phosphate")
 print(Total.PeterPaul.chem.nutrients)
