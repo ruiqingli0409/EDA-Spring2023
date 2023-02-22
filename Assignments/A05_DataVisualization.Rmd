@@ -1,6 +1,6 @@
 ---
 title: "Assignment 5: Data Visualization"
-author: "Student Name"
+author: "Ruiqing Li"
 date: "Spring 2023"
 output: pdf_document
 geometry: margin=2.54cm
@@ -15,7 +15,7 @@ editor_options:
 This exercise accompanies the lessons in Environmental Data Analytics on Data Visualization 
 
 ## Directions
-1.  Rename this file `<FirstLast>_A05_DataVisualization.Rmd` (replacing `<FirstLast>` with your first and last name).
+1.  Rename this file `<RuiqingLi>_A05_DataVisualization.Rmd` (replacing `<FirstLast>` with your first and last name).
 2. Change "Student Name" on line 3 (above) with your name.
 3. Work through the steps, **creating code and output** that fulfill each instruction.
 4. Be sure your code is tidy; use line breaks to ensure your code fits in the knitted output.
@@ -32,9 +32,19 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 
 ```{r initialize project}
 #1 
+library(tidyverse)
+library(lubridate)
+library(here)
+library(cowplot)
+getwd()
+PeterPaul.chem.nutrients <- 
+  read.csv(here("Data/Processed_KEY/NTL-LTER_Lake_Chemistry_Nutrients_PeterPaul_Processed.csv"), stringsAsFactors = TRUE)
+Niwot.Ridge.litter <-
+  read.csv(here("Data/Processed_KEY/NEON_NIWO_Litter_mass_trap_Processed.csv"), stringsAsFactors = TRUE)
 
 #2 
-
+PeterPaul.chem.nutrients$sampledate <- ymd(PeterPaul.chem.nutrients$sampledate)
+Niwot.Ridge.litter$collectDate <- ymd(Niwot.Ridge.litter$collectDate)
 ```
 ## Define your theme
 3. Build a theme and set it as your default theme. Customize the look of at least two of the following: 
@@ -46,7 +56,21 @@ This exercise accompanies the lessons in Environmental Data Analytics on Data Vi
 
 ```{r build plot theme}
 #3
+mytheme.A5 <- theme_classic(base_size = 14) +
+  theme(axis.text = element_text(color = "black"), 
+        legend.position = "top")
 
+Plot.Niwot.Ridge.litter <- ggplot(Niwot.Ridge.litter) +
+  geom_point(aes(x = collectDate, y = dryMass)) +
+  mytheme.A5
+print(Plot.Niwot.Ridge.litter)
+
+theme_set(mytheme.A5)
+
+Plot.PeterPaul.chem.nutrients <- ggplot(PeterPaul.chem.nutrients) +
+  geom_point(aes(x = sampledate, y = temperature_C)) +
+  mytheme.A5
+print(Plot.PeterPaul.chem.nutrients)
 ```
 
 ## Create graphs
