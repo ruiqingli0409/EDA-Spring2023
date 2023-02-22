@@ -117,10 +117,12 @@ Question: What do you observe about the variables of interest over seasons and b
 #6
 needles.Niwot.Ridge.litter <- 
   ggplot(subset(Niwot.Ridge.litter, functionalGroup == "Needles"), 
-         aes( x = collectDate, y = dryMass,color= nlcdClass)) + 
-  geom_point() +
+         aes( x = collectDate, y = dryMass)) + 
+  geom_point(aes(color= nlcdClass))+
 print(needles.Niwot.Ridge.litter)
+```
 
+```{r}
 #7
 needles.Niwot.Ridge.litter.faceted<-
   ggplot(Niwot.Ridge.litter,aes(y = dryMass, x = collectDate)) +
