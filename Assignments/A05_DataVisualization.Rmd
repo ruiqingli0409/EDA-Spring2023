@@ -99,14 +99,14 @@ tn_ug.NTL.LTER <-
   ggplot(PeterPaul.chem.nutrients, aes(as.factor(month), y=tn_ug)) +
   geom_boxplot(aes(color = lakename))+
                  xlab("month")+
-                 ylab("temperature")
+                 ylab("TP")
 print(tn_ug.NTL.LTER)
 
 tp_ug.NTL.LTER <-
   ggplot(PeterPaul.chem.nutrients, aes(as.factor(month), y=tp_ug)) +
   geom_boxplot(aes(color = lakename))+
                  xlab("month")+
-                 ylab("temperature")
+                 ylab("TN")
 print(tp_ug.NTL.LTER)
 
 library(cowplot)
@@ -125,21 +125,24 @@ Question: What do you observe about the variables of interest over seasons and b
 #6
 needles.Niwot.Ridge.litter <- 
   ggplot(subset(Niwot.Ridge.litter, functionalGroup = "Needles"), 
-         aes( x = collectDate, y = dryMass)) + 
+         aes( x = as.factor(collectDate), y = dryMass)) + 
   geom_point(aes(color= nlcdClass))+
                  xlab("collectdate")+
-                 ylab("drymass")
+                 ylab("drymass")+
+  theme(axis.text.x = element_text(angle = 90))
 print(needles.Niwot.Ridge.litter)
 ```
 
 ```{r}
 #7
-needles.Niwot.Ridge.litter.faceted<-
-  ggplot(Niwot.Ridge.litter,aes(y = dryMass, x = collectDate)) +
+needles.Niwot.Ridge.litter.faceted =
+ggplot(Niwot.Ridge.litter, aes( x = as.factor(collectDate), y = dryMass)) +
   geom_point() +
   facet_wrap(vars(nlcdClass), nrow = 3)+
                  xlab("collectdate")+
-                 ylab("drymass")
+                 ylab("drymass")+
+ theme(axis.text.x = element_text(angle = 90))
+
 print(needles.Niwot.Ridge.litter.faceted)
 
 ```
