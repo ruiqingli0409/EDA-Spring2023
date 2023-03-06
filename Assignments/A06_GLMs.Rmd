@@ -74,7 +74,6 @@ TemperatureDepth.NTL.LTER <-
   ggplot(July.NTL.LTER, aes(x = temperature_C, y=depth)) +
   geom_point()+
  xlim(0, 35) +
-  ylim(0, 20)+
   geom_smooth(method=lm,color="yellow",size=0.5)+
                  xlab("Temperature(°C)")+
                  ylab("Depth(m)")+
@@ -107,18 +106,11 @@ There is a significant negative correlation between temperature and depth (highe
 ---
 
 ## Multiple regression
-Let's tackle a similar question from a different approach. Here, we want to explore what might the best set of predictors for lake temperature in July across the monitoring period at the North Temperate Lakes LTER. 
-
+Let's tackle a similar question from a different approach. Here, we want to explore what might the best set of predictors for lake temperature in July across the monitoring period at the  North Temperate Lakes LTER.
 
 9. Run an AIC to determine what set of explanatory variables (year4, daynum, depth) is best suited to predict temperature.
 
 10. Run a multiple regression on the recommended set of variables. 
-
-```{r}
-year4.daynum.depth <- lm(data = July.NTL.LTER, July.NTL.LTER$temperature_C ~ July.NTL.LTER$depth + July.NTL.LTER$year4+July.NTL.LTER$daynum)
-step(year4.daynum.depth)
-```
-
 
 ```{r temperature.model}
 #9
@@ -137,15 +129,35 @@ year4.daynum<-
 AIC(year4.daynum)
 summary(year4.daynum)
 
-#10
+year4<-
+  lm(July.NTL.LTER$temperature_C ~ July.NTL.LTER$year4 )
+AIC(year4)
+summary(year4)
 
+daynum<-
+  lm(July.NTL.LTER$temperature_C ~ July.NTL.LTER$daynum )
+AIC(daynum)
+summary(daynum)
+
+depth<-
+  lm(July.NTL.LTER$temperature_C ~ July.NTL.LTER$depth )
+AIC(depth)
+summary(depth)
+
+year4.daynum.depth <- lm(data = July.NTL.LTER, July.NTL.LTER$temperature_C ~ July.NTL.LTER$depth + July.NTL.LTER$year4+July.NTL.LTER$daynum)
+AIC(year4.daynum.depth)
+
+step(year4.daynum.depth)
+
+
+#10
+summary(year4.daynum.depth)
 ```
 
 11. What is the final set of explanatory variables that the AIC method suggests we use to predict temperature in our multiple regression? How much of the observed variance does this model explain? Is this an improvement over the model using only depth as the explanatory variable?
 
 > Answer: 
-depth and daynum
-
+All three explanatory variables (year4, daynum, depth) should be included. According to R-Squared Value, this model explained 74% of the total variance. The previous model using only depth explained about 73.87 % of the total variance in temperature. So, yes, it is an improvement.
 
 ---
 ## Analysis of Variance
@@ -155,13 +167,22 @@ depth and daynum
 ```{r anova.model}
 #12
 
+July.anova <- aov(data = July.NTL.LTER, July.NTL.LTER$temperature_C ~ July.NTL.LTER$lakename)
+summary(July.anova)
+anova(July.anova)
+
+July.anova.lm <- lm(data = July.NTL.LTER, July.NTL.LTER$temperature_C ~ July.NTL.LTER$lakename)
+summary(July.anova.lm)
+anova(July.anova.lm)
+
+TukeyHSD(July.anova)
 
 ```
 
 13. Is there a significant difference in mean temperature among the lakes? Report your findings. 
 
 > Answer: 
-
+Yes, there is.For every meter of difference in lake depth, the temperature among different lakes change between 2.3°C and 6.9°C.
 
 
 14. Create a graph that depicts temperature by depth, with a separate color for each lake. Add a geom_smooth (method = "lm", se = FALSE) for each lake. Make your points 50 % transparent. Adjust your y axis limits to go from 0 to 35 degrees. Clean up your graph to make it pretty. 
@@ -169,6 +190,32 @@ depth and daynum
 ```{r scatterplot.2}
 #14.
 
+#For July
+JulyLakeTemperatureDepth.NTL.LTER <-
+  ggplot(July.NTL.LTER, aes(x = temperature_C, y=depth)) +
+  geom_point(aes(color=lakename),alpha=0.5)+
+ xlim(0, 35) +
+  geom_smooth(method = "lm", se = FALSE,color="yellow",size=0.5)+
+                 xlab("Temperature(°C)")+
+                 ylab("Depth(m)")+
+  ggtitle("Lakes Temperature Change by Depth")
+print(JulyLakeTemperatureDepth.NTL.LTER)
+
+#For All Months
+New.NTL.LTER <- 
+ Raw.NTL.LTER %>%
+  select(lakename, depth, temperature_C) %>%
+  na.omit()
+
+AllMonthsLakeTemperatureDepth.NTL.LTER <-
+  ggplot(New.NTL.LTER, aes(x = temperature_C, y=depth)) +
+  geom_point(aes(color=lakename),alpha=0.5)+
+ xlim(0, 35) +
+  geom_smooth(method = "lm", se = FALSE,color="yellow",size=0.5)+
+                 xlab("Temperature(°C)")+
+                 ylab("Depth(m)")+
+  ggtitle("Lakes Temperature Change by Depth")
+print(AllMonthsLakeTemperatureDepth.NTL.LTER)
 
 ```
 
@@ -176,7 +223,26 @@ depth and daynum
 
 ```{r tukey.test}
 #15
+#For July
+JulyDepth.anova <- aov(data = July.NTL.LTER, July.NTL.LTER$temperature_C ~ July.NTL.LTER$lakename)
+summary(JulyDepth.anova)
+anova(JulyDepth.anova)
 
+JulyDepth.anova.lm <- lm(data = July.NTL.LTER, July.NTL.LTER$temperature_C ~ July.NTL.LTER$lakename)
+summary(JulyDepth.anova.lm)
+anova(JulyDepth.anova.lm)
+
+TukeyHSD(JulyDepth.anova)
+
+#For All Months
+All.anova <- aov(data = New.NTL.LTER, New.NTL.LTER$temperature_C ~ New.NTL.LTER$lakename)
+summary(All.anova)
+anova(All.anova)
+
+All.anova.lm <- lm(data = New.NTL.LTER, New.NTL.LTER$temperature_C ~ New.NTL.LTER$lakename)
+summary(All.anova.lm)
+anova(All.anova.lm)
+TukeyHSD(All.anova)
 
 ```
 
@@ -184,18 +250,45 @@ depth and daynum
 
 >Answer:
 
- 
+#For July
+Peter Lake-Paul Lake               -0.4979952°C difference
+Ward Lake-Peter Lake                0.1755268°C difference
+
+Maybe Ward Lake-East Long Lake      4.1909554°C difference
+
+#For All Months
+Peter Lake-Paul Lake               -0.5397183°C difference
+Ward Lake-Peter Lake                0.1755268°C difference
+
+Maybe Ward Lake-Central Long Lake  -4.3082596°C difference
+
 
 17. If we were just looking at Peter Lake and Paul Lake. What's another test we might explore to see whether they have distinct mean temperatures? 
 
 >Answer: 
 
+Two Sample T-Test
 
 
 18. Wrangle the July data to include only records for Crampton Lake and Ward Lake. Run the two-sample T-test on these data to determine whether their July temperature are same or different. What does the test say? Are the mean temperatures for the lakes equal? Does that match you answer for part 16?
 
 ```{r t.test}
+CramptonWard.NTL.LTER <- 
+ Raw.NTL.LTER %>%
+  select(lakename, year4, daynum, depth, temperature_C) %>%
+  filter(month(Raw.NTL.LTER$sampledate) %in% 7, lakename == "Ward Lake"|lakename =="Crampton Lake")%>%
+  na.omit()
+print(CramptonWard.NTL.LTER)
 
+ggplot(CramptonWard.NTL.LTER, aes(x = temperature_C, color = lakename)) +
+  geom_freqpoly()
+
+twosample <- t.test(CramptonWard.NTL.LTER$temperature_C ~ CramptonWard.NTL.LTER$lakename)
+twosample
+
+twosample2 <- lm(CramptonWard.NTL.LTER$temperature_C ~ CramptonWard.NTL.LTER$lakename)
+summary(twosample2)
 ```
 
 >Answer: 
+The mean in group Crampton Lake is 15.35189, and the mean in group Ward Lake is 14.45862, which are really close but not exact.The difference in TukeyHSD(JulyDepth.anova) for these two lakes is 0.8932661 which is the same as the result from the two-sample T-test we performed. 
