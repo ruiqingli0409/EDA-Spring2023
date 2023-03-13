@@ -118,11 +118,7 @@ print(plot_2019record)
 ## Task 4: Knit and submit.
 Add a table of contents to your document and knit to a PDF. Submit your PDF to Sakai, but also be sure to commit and push your Rmd file used to create this knit document to GitHub. In the section below, add a link to your GitHub repository. 
 
-
-https://github.com/ruiqingli0409/EDA-Spring2023/blob/185f3e08566630a08f7b43ee213891e0b1606f08/Assignments/A07_Lab_Crafting_Reports.pdf
-
-
 ### Git Repository
 
 
-
+https://github.com/ruiqingli0409/EDA-Spring2023/blob/185f3e08566630a08f7b43ee213891e0b1606f08/Assignments/A07_Lab_Crafting_Reports.pdf
