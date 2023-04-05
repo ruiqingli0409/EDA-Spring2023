@@ -1,6 +1,6 @@
 ---
 title: "Assignment 10: Data Scraping"
-author: "Student Name"
+author: "Ruiqing Li"
 output: pdf_document
 geometry: margin=2.54cm
 editor_options: 
@@ -12,7 +12,7 @@ editor_options:
 This exercise accompanies the lessons in Environmental Data Analytics on data scraping. 
 
 ## Directions
-1. Rename this file `<FirstLast>_A10_DataScraping.Rmd` (replacing `<FirstLast>` with your first and last name).
+1. Rename this file `<RuiqingLi>_A10_DataScraping.Rmd` (replacing `<FirstLast>` with your first and last name).
 2. Change "Student Name" on line 3 (above) with your name.
 3. Work through the steps, **creating code and output** that fulfill each instruction.
 4. Be sure your code is tidy; use line breaks to ensure your code fits in the knitted output.
@@ -28,7 +28,13 @@ This exercise accompanies the lessons in Environmental Data Analytics on data sc
 
 ```{r, message = FALSE}
 #1
+library(tidyverse)
+library(lubridate)
+library(here); here()
+library(rvest)
 
+getwd()
+```
 
 ```
 
@@ -41,7 +47,9 @@ Indicate this website as the as the URL to be scraped. (In other words, read the
 
 ```{r set.the.scraping.website}
 #2
-
+#Fetch the web resources from the URL
+LWSP.Webpage <- read_html('https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=03-32-010&year=2022')
+LWSP.Webpage
 
 ```
 
@@ -61,13 +69,25 @@ In the code chunk below scrape these values, assigning them to four separate var
 
 ```{r scrape.the.data}
 #3
-water.system.name <- 
+water.system.name <- LWSP.Webpage %>% 
+  html_nodes("div+ table tr:nth-child(1) td:nth-child(1) .q") %>% 
+  html_text()
+water.system.name
   
-PWSID <- 
+PWSID <- LWSP.Webpage %>% 
+  html_nodes("td tr:nth-child(1) td+ td .q") %>% 
+  html_text()
+PWSID  
   
-ownership <- 
+ownership <- LWSP.Webpage %>% 
+  html_nodes("tr:nth-child(2) td+ td .q") %>% 
+  html_text()
+ownership
 
-max.withdrawals.mgd <- 
+max.withdrawals.mgd  <- LWSP.Webpage %>% 
+  html_nodes('.fancy-table:nth-child(31) th:nth-child(6)') %>%
+  html_text()
+max.withdrawals.mgd 
 
 ```
 
@@ -82,7 +102,13 @@ max.withdrawals.mgd <-
 
 ```{r create.a.dataframe.from.scraped.data}
 #4
-
+df_LWSP <- data.frame("Month" = rep(1:12))
+                             
+df_LWSP <- df_withdrawals %>% 
+  mutate(Registrant = !!the_registrant,
+         Facility_name = !!the_facility_name,
+         Facility_type = !!the_facility_type,
+         Date = my(paste(Month,"-",Year)))
 
 
 #5
