@@ -47,7 +47,7 @@ Indicate this website as the as the URL to be scraped. (In other words, read the
 
 ```{r set.the.scraping.website}
 #2
-#Fetch the web resources from the URL
+
 LWSP.Webpage <- read_html('https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=03-32-010&year=2022')
 LWSP.Webpage
 
@@ -70,22 +70,22 @@ In the code chunk below scrape these values, assigning them to four separate var
 ```{r scrape.the.data}
 #3
 water.system.name <- LWSP.Webpage %>% 
-  html_nodes("div+ table tr:nth-child(1) td:nth-child(1) .q") %>% 
+  html_nodes("div+ table tr:nth-child(1) td:nth-child(2)") %>% 
   html_text()
 water.system.name
   
 PWSID <- LWSP.Webpage %>% 
-  html_nodes("td tr:nth-child(1) td+ td .q") %>% 
+  html_nodes("td tr:nth-child(1) td:nth-child(5)") %>% 
   html_text()
 PWSID  
   
 ownership <- LWSP.Webpage %>% 
-  html_nodes("tr:nth-child(2) td+ td .q") %>% 
+  html_nodes("div+ table tr:nth-child(2) td:nth-child(4)") %>% 
   html_text()
 ownership
 
 max.withdrawals.mgd  <- LWSP.Webpage %>% 
-  html_nodes('.fancy-table:nth-child(31) th:nth-child(6)') %>%
+  html_nodes('th~ td+ td') %>%
   html_text()
 max.withdrawals.mgd 
 
@@ -102,17 +102,28 @@ max.withdrawals.mgd
 
 ```{r create.a.dataframe.from.scraped.data}
 #4
-df_LWSP <- data.frame("Month" = rep(1:12))
-                             
-df_LWSP <- df_withdrawals %>% 
-  mutate(Registrant = !!the_registrant,
-         Facility_name = !!the_facility_name,
-         Facility_type = !!the_facility_type,
-         Date = my(paste(Month,"-",Year)))
 
+df_LWSP_withdrawals <- data.frame(
+"Month" = month(c(1,5,9,2,6,10,3,7,11,4,8,12)),
+"Year" = rep(2022,12),
+"max.withdrawals.mgd" = as.numeric(max.withdrawals.mgd),
+"water.system.name" = water.system.name,
+"PWSID" = PWSID,
+"ownership" = ownership)
+
+df_LWSP_withdrawals <- df_LWSP_withdrawals %>%          
+mutate(Date = my(paste(Month,"-",Year)))
+
+df_LWSP_withdrawals
 
 #5
-
+ggplot(df_LWSP_withdrawals,aes(x=Date,y=max.withdrawals.mgd)) + 
+  geom_line() + 
+  geom_smooth(method="loess",se=FALSE) +
+  labs(title = paste("2022 Max Daily Water System Withdrawals in",water.system.name),
+       subtitle = ownership,
+       y="Withdrawal (mgd)",
+       x="Date")
 
 ```
 
@@ -120,7 +131,29 @@ df_LWSP <- df_withdrawals %>%
 
 ```{r construct.a.scraping.function}
 #6.
+scrape.it <- function(the_year, the_PWSID){
+  the_website <- read_html(paste0('https://www.ncwater.org/WUDC/app/LWSP/report.php?pwsid=', the_PWSID,'&year=',the_year))
+                                
+  the_water.system.name_tag <- 'div+ table tr:nth-child(1) td:nth-child(2)'
+  the_PWSID_tag <- 'td tr:nth-child(1) td:nth-child(5)'
+  the_ownership_tag <- 'div+ table tr:nth-child(2) td:nth-child(4)'
+  the_data_tag <- 'th~ td+ td'
 
+  the_water.system.name <- the_website %>% html_nodes(the_water.system.name_tag) %>% html_text()
+  the_PWSID <- the_website %>%   html_nodes( the_PWSID_tag) %>%  html_text()
+  the_ownership_tag <- the_website %>% html_nodes(the_ownership_tag) %>% html_text()
+  max_withdrawals <- the_website %>% html_nodes(the_data_tag) %>% html_text()
+  
+df_LWSP_withdrawals <- data.frame(
+"Month" = month(c(1,5,9,2,6,10,3,7,11,4,8,12)),
+"Year" = rep(2022,12),
+"max.withdrawals.mgd" = as.numeric(max.withdrawals.mgd),
+"water.system.name" = water.system.name,
+"PWSID" = PWSID,
+"ownership" = ownership)
+  
+  return(df_LWSP_withdrawals)
+}
 
 ```
 
@@ -128,7 +161,8 @@ df_LWSP <- df_withdrawals %>%
 
 ```{r fetch.and.plot.Durham.2015.data}
 #7
-
+the_df_new <- scrape.it(2015,PWSID='03-32-010')
+view(the_df_new)
 
 ```
 
