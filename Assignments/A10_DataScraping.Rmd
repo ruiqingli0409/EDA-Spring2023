@@ -191,8 +191,25 @@ ggplot(combined,aes(x=Date,y=max.withdrawals)) +
 
 ```{r}
 #9 
-ggplot(Asheville_the_df_new,aes(x=Date,y=max_withdrawals,color=water.system.name)) +
-  geom_smooth(method="loess",se=FALSE) + filter(the_year %in% c(2010:2021))
+the_year = rep(2010:2021)
+the_PWSID = '01-11-010'
+
+Asheville_the_dfs <- lapply(X = the_year,
+                  FUN = scrape.it,
+                  the_PWSID=the_PWSID)
+
+Asheville_the_dfs <- map(the_year,scrape.it,the_PWSID=the_PWSID)
+
+Asheville_the_df<- bind_rows(Asheville_the_dfs)
+
+Asheville_the_df
+ggplot(Asheville_the_df,aes(x=Date,y=max.withdrawals)) + 
+  geom_line() + 
+  geom_smooth(method="loess",se=FALSE) +
+  labs(title = "2010~2021 Max Daily Water System Withdrawals in Asheville",
+       subtitle = ownership,
+       y="Withdrawal (mgd)",
+       x="Date")
 ```
 
 > Question: Just by looking at the plot (i.e. not running statistics), does Asheville have a trend in water usage over time?
